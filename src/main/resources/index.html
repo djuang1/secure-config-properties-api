@@ -16,7 +16,7 @@
             <div class="py-5 text-center">
                 <img class="d-block mx-auto mb-4" src="https://github.com/djuang1/djuang1.github.io/blob/master/img/mule_sfdc.png?raw=true" alt=""">
                 <h1>Secure Properties Generator</h1>
-                <p class="lead">Use this tool to generate MuleSoft secure properties.</p>
+                <p class="lead">Use this tool to generate MuleSoft secure configuration properties for your application. The tool currently only supports *.yaml files. For more details, click <a href="https://docs.mulesoft.com/mule-runtime/4.2/secure-configuration-properties">here.</a></p>
             </div>
 
             <div class="row">
@@ -43,7 +43,17 @@
                           <div class="tab-pane active" id="string" role="tabpanel">
                             <form id="form_string" action="api/string" method="post" enctype="multipart/form-data">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="operation">Operation</label>
+                                        <select class="custom-select d-block w-100" id="operation" name="operation" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
+                                            <option value="encrypt" selected>Encrypt</option>
+                                            <option value="decrypt">Decrypt</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an operation.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
                                         <label for="algorithm">Algorithm</label>
                                         <select class="custom-select d-block w-100" id="algorithm" name="algorithm" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
                                             <option value="AES" selected>AES (default)</option>
@@ -57,7 +67,7 @@
                                             Please select an algorithm.
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="state">State</label>
                                         <select class="custom-select d-block w-100" id="mode" name="mode" required>
                                             <option value="CBC" selected>CBC (default)</option>
@@ -84,7 +94,6 @@
                                 </div>
                                 <!-- key value row-->
             
-                                <input type="hidden" id="operation" name="operation" value="encrypt" />
                                 <input type="hidden" id="method" name="method" value="string" />
                                 <hr class="mb-4" />
                                 <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="submit" value="Generate" />
@@ -96,7 +105,17 @@
                           <div class="tab-pane" id="file" role="tabpanel">  
                             <form id="form_file" action="api/file" method="post" enctype="multipart/form-data">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="operation">Operation</label>
+                                        <select class="custom-select d-block w-100" id="operation" name="operation" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
+                                            <option value="encrypt" selected>Encrypt</option>
+                                            <option value="decrypt">Decrypt</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an operation.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
                                         <label for="algorithm">Algorithm</label>
                                         <select class="custom-select d-block w-100" id="algorithm" name="algorithm" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
                                             <option value="AES" selected>AES (default)</option>
@@ -110,7 +129,7 @@
                                             Please select an algorithm.
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="state">State</label>
                                         <select class="custom-select d-block w-100" id="mode" name="mode" required>
                                             <option value="CBC" selected>CBC (default)</option>
@@ -145,8 +164,7 @@
                                 </div>
                                 <!-- key value row-->
             
-                                <input type="hidden" id="operation" name="operation" value="encrypt" />
-                                <input type="hidden" id="method" name="method" value="string" />
+                                <input type="hidden" id="method" name="method" value="file" />
                                 <hr class="mb-4" />
                                 <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="submit" value="Generate" />
                                
@@ -156,7 +174,17 @@
                           <div class="tab-pane" id="file-level" role="tabpanel">
                             <form id="form_file_level" action="api/file-level" method="post" enctype="multipart/form-data">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="operation">Operation</label>
+                                        <select class="custom-select d-block w-100" id="operation" name="operation" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
+                                            <option value="encrypt" selected>Encrypt</option>
+                                            <option value="decrypt">Decrypt</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an operation.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
                                         <label for="algorithm">Algorithm</label>
                                         <select class="custom-select d-block w-100" id="algorithm" name="algorithm" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
                                             <option value="AES" selected>AES (default)</option>
@@ -170,7 +198,7 @@
                                             Please select an algorithm.
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
                                         <label for="state">State</label>
                                         <select class="custom-select d-block w-100" id="mode" name="mode" required>
                                             <option value="CBC" selected>CBC (default)</option>
@@ -205,8 +233,7 @@
                                 </div>
                                 <!-- key value row-->
             
-                                <input type="hidden" id="operation" name="operation" value="encrypt" />
-                                <input type="hidden" id="method" name="method" value="string" />
+                                <input type="hidden" id="method" name="method" value="file-level" />
                                 <hr class="mb-4" />
                                 <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="submit" value="Generate" />
                               
