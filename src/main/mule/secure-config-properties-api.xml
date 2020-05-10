@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
     <http:listener-config name="secure-properties-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="8082" protocol="HTTPS">
+			<tls:context >
+				<tls:key-store type="jks" path="keystore.jks" keyPassword="password" password="password" />
+			</tls:context>
+		</http:listener-connection>
     </http:listener-config>
-    <apikit:config name="secure-properties-api-config" api="resource::b85b361d-0842-4b70-af37-2723c2c3ae7e:Secure-Properties-API:2.0.1:raml:zip:secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="secure-properties-api-config" api="resource::b85b361d-0842-4b70-af37-2723c2c3ae7e:Secure-Properties-API:2.0.2:raml:zip:secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <file:config name="File_Config" doc:name="File Config" doc:id="17a4b774-2a13-4ac3-be1c-22f25c0ea68e" />
     <flow name="secure-properties-api-main">
         <http:listener config-ref="secure-properties-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -19,7 +26,7 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
         <apikit:router config-ref="secure-properties-api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -32,7 +39,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -45,7 +52,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -58,7 +65,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -71,7 +78,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -84,7 +91,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -96,6 +103,21 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d6208fc2-9e79-4751-a02a-287399641907" type="APP:ENCRYPT_ERROR">
+				<ee:transform doc:name="Transform Message" doc:id="c187fecd-7a40-4d7f-9b2d-1ac3ca95489c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: error.description
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[422]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
         </error-handler>
     </flow>
     <flow name="secure-properties-api-console">
@@ -111,7 +133,9 @@ output application/json
         <apikit:console config-ref="secure-properties-api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -126,22 +150,107 @@ output application/json
         </error-handler>
     </flow>
     <flow name="post:\file-level:multipart\form-data:secure-properties-api-config">
-        <logger level="INFO" message="post:\file-level:multipart\form-data:secure-properties-api-config" />
+    	<logger level="INFO" message="post:\file-level:multipart\form-data:secure-properties-api-config" />
+		<set-variable value="#[output application/java --- payload.parts.inputFile.headers.'Content-Type']" doc:name="contentType" doc:id="cc09c987-519b-43a2-9f40-f27f9875948e" variableName="contentType"/>
+		<try doc:name="Try" doc:id="5a059cd9-8bd5-4335-b8d1-848c5c7fbb4c" >
+			<validation:is-true doc:name="Is true" doc:id="5f2acb67-f0e2-41bf-95f7-e9ca03f3bb66" expression="#[vars.contentType == 'application/x-yaml' or vars.contentType == 'text/yaml']"/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4a63cde3-22d2-4c1d-b911-7aa17e5d09e0" >
+					<logger level="INFO" doc:name="Logger" doc:id="1f1b3d87-9d2d-4e41-9049-ef42be40a067" message="#[payload]"/>
+					<raise-error doc:name="Raise error" doc:id="3e862e37-7cf0-4aac-bc9a-87ea39b30db4" type="APP:FILE_TYPE" description="Wrong input file type. File must be in *.yaml format."/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="6c456b40-8fca-4fee-8df7-7399b4d32d77" variableName="operation" />
+				<set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="7950deb8-1724-4fb7-903c-ced98b2c90c7" variableName="algorithm" />
+				<set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="eaca48e5-26be-419c-b185-0124e3beb161" variableName="mode" />
+				<set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="d7352ea0-2bd8-49c5-a9a4-b78c733d4011" variableName="key" />
+				<set-variable value="#[output application/java --- payload.parts.outputFile.content]" doc:name="outputFile" doc:id="dfed26cd-f445-434d-a188-684291f546af" variableName="outputFile" />
+				<file:write doc:name="Write" doc:id="b52120c7-f225-4bf7-af46-934d066c6803" config-ref="File_Config" path="#[p('app.home') ++ &quot;/file.yaml&quot;]">
+			<file:content><![CDATA[#[payload.parts.inputFile.content]]]></file:content>
+		</file:write>
+				<java:new doc:name="New" doc:id="076629d4-d44b-438d-863e-58e9d847120f" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()" />
+				<java:invoke doc:name="Invoke" doc:id="03ae584f-ea47-4dee-a011-3866ddc3e3a3" instance="#[payload]" class="com.dejim.SecurePropertiesWrapper" method="secureFileLevel(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+			<java:args><![CDATA[#[output application/java
+---
+{
+	arg0: p('app.home'),
+	arg1: vars.operation,
+	arg2: vars.algorithm,
+	arg3: vars.mode,
+	arg4: vars.key,
+	arg5: p('app.home') ++ "/file.yaml",
+	arg6: vars.outputFile
+}]]]></java:args>
+		</java:invoke>
+				<logger level="INFO" doc:name="Logger" doc:id="dfdaa84d-73e3-4183-b22d-6abb2240f6ba" />
+				<set-variable value='#[%dw 2.0
+import * from dw::core::Binaries
+output application/java
+---
+(vars.outboundHeaders default {}) ++ {"Content-Disposition":"attachment; filename=" ++ vars.outputFile, "Content-Type":"application/octet-stream"}]' doc:name="Set Variable" doc:id="c52ee2ab-ae58-4164-b2a1-3408b4728545" variableName="outboundHeaders" />
+				<file:read doc:name="Read" doc:id="f54d8d6a-29a2-4cb9-ae23-671dfe88ec1b" path="#[p('app.home') ++ &quot;/&quot; ++ vars.outputFile]" outputMimeType="application/octet-stream" />
+			
     </flow>
     <flow name="post:\file:multipart\form-data:secure-properties-api-config">
         <logger level="INFO" message="post:\file:multipart\form-data:secure-properties-api-config" />
+		<set-variable value="#[output application/java --- payload.parts.inputFile.headers.'Content-Type']" doc:name="contentType" doc:id="9ba08efa-b4b0-4d59-b796-3daefb137982" variableName="contentType"/>
+		<try doc:name="Try" doc:id="595b1142-6da2-4f4e-a134-91be17d51281" >
+			<validation:is-true doc:name="Is true" doc:id="95fdf990-ddcd-4deb-8047-a95bf5db34bd" expression="#[vars.contentType == 'application/x-yaml' or vars.contentType == 'text/yaml']"/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5b277253-38ab-4369-a10e-f8d68b0ddcd2" >
+					<raise-error doc:name="Raise error" doc:id="11851a31-7f19-4506-9b4b-d23339d3f96a" type="APP:ENCRYPT_ERROR" description="Wrong input file type. File must be in *.yaml format."/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+        <set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="1c4be073-8e52-4036-b62d-ee49868effa4" variableName="operation" />
+        <set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="1830683f-ea7d-4f58-a697-35b91527db81" variableName="algorithm" />
+        <set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="a0cd57fb-de67-47e7-91e4-cab79a5da07c" variableName="mode" />
+        <set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="a64ef7e8-5516-4498-84df-fb63bbc351de" variableName="key" />
+        <set-variable value="#[output application/java --- payload.parts.outputFile.content]" doc:name="outputFile" doc:id="ac653e78-4ce0-4196-b02b-91abb0bdc414" variableName="outputFile" />
+		<file:write doc:name="Write" doc:id="f73c2fb6-c040-4569-a44b-1885c5079a9d" config-ref="File_Config" path="#[p('app.home') ++ &quot;/file.yaml&quot;]" >
+			<file:content ><![CDATA[#[payload.parts.inputFile.content]]]></file:content>
+		</file:write>
+		<java:new doc:name="New" doc:id="becd6d44-9ad4-4711-95e6-8f8ba7945c91" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()"/>
+		<java:invoke doc:name="Invoke" doc:id="ee6772ed-aeb4-4ee9-a392-b42d5723cb88" instance="#[payload]" class="com.dejim.SecurePropertiesWrapper" method="secureFile(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+			<java:args ><![CDATA[#[output application/java
+---
+{
+	arg0: p('app.home'),
+	arg1: vars.operation,
+	arg2: vars.algorithm,
+	arg3: vars.mode,
+	arg4: vars.key,
+	arg5: p('app.home') ++ "/file.yaml",
+	arg6: vars.outputFile
+}]]]></java:args>
+		</java:invoke>
+		<try doc:name="Try" doc:id="4860aa6b-90e4-433c-86f9-63c758da268b" >
+			<validation:is-false doc:name="Is false" doc:id="9bd3790a-638e-482e-8471-e0b6109b659b" expression='#[payload startsWith("Invalid")]'/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="cbfbdc77-f7cd-481a-a785-c6fbb22ed998" >
+					<raise-error doc:name="Raise error" doc:id="9284bef3-6f53-4109-bfa3-7b763389c27f" type="APP:ENCRYPT_ERROR" description='#["Error encrypting file: " ++ payload]'/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<set-variable value='#[%dw 2.0
+import * from dw::core::Binaries
+output application/java
+---
+(vars.outboundHeaders default {}) ++ {"Content-Disposition":"attachment; filename=" ++ vars.outputFile, "Content-Type":"application/octet-stream"}]' doc:name="Set Variable" doc:id="6be5b7b6-ba85-45f5-b3bf-530a8dc85eae" variableName="outboundHeaders" />
+		<file:read doc:name="Read" doc:id="448940e0-451e-4737-8d94-8d62194d3038" path="#[p('app.home') ++ &quot;/&quot; ++ vars.outputFile]" outputMimeType="application/octet-stream"/>
+         
     </flow>
     <flow name="post:\string:multipart\form-data:secure-properties-api-config">
-		<logger level="INFO" doc:name="Logger" doc:id="e74daed2-148c-4e2b-8cb8-4ee5dcd47071" />
-		<set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="503a6af9-9a72-4881-bf1a-114b8c2eeedb" variableName="operation"/>
-		<set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="17b77276-0fe0-4265-9788-17ef2089793d" variableName="algorithm"/>
-		<set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="2ac2d1c8-f76f-4d29-8bc7-8e0831c1b679" variableName="mode"/>
-		<set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="fd424515-e028-4176-8024-684387a731ea" variableName="key"/>
-		<set-variable value="#[output application/java --- payload.parts.value.content]" doc:name="value" doc:id="acf2bf95-8c1d-4db8-b114-b7ffaa1f6b2d" variableName="value"/>
-		
-		<java:new doc:name="New" doc:id="4462a417-6a11-4b66-993f-a0435c734d3b" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()"/>
-		<java:invoke doc:name="Invoke" doc:id="99b0131d-d336-4102-8778-7fbf8b16991c" instance="#[payload]" class="com.dejim.SecurePropertiesWrapper" method="secureString(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-			<java:args ><![CDATA[#[output application/java
+        <logger level="INFO" doc:name="Logger" doc:id="e74daed2-148c-4e2b-8cb8-4ee5dcd47071" />
+        <set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="503a6af9-9a72-4881-bf1a-114b8c2eeedb" variableName="operation" />
+        <set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="17b77276-0fe0-4265-9788-17ef2089793d" variableName="algorithm" />
+        <set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="2ac2d1c8-f76f-4d29-8bc7-8e0831c1b679" variableName="mode" />
+        <set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="fd424515-e028-4176-8024-684387a731ea" variableName="key" />
+        <set-variable value="#[output application/java --- payload.parts.value.content]" doc:name="value" doc:id="acf2bf95-8c1d-4db8-b114-b7ffaa1f6b2d" variableName="value" />
+        <java:new doc:name="New" doc:id="4462a417-6a11-4b66-993f-a0435c734d3b" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()" />
+        <java:invoke doc:name="Invoke" doc:id="99b0131d-d336-4102-8778-7fbf8b16991c" instance="#[payload]" class="com.dejim.SecurePropertiesWrapper" method="secureString(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+            <java:args><![CDATA[#[output application/java
 ---
 {
 	arg0: p('app.home'),
@@ -151,20 +260,28 @@ output application/json
 	arg4: vars.key,
 	arg5: vars.value
 }]]]></java:args>
-		</java:invoke>
-		<ee:transform doc:name="Transform Message" doc:id="81201ada-6ff2-488d-afe1-29cbb25612f7" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+        </java:invoke>
+        <try doc:name="Try" doc:id="6a4f7569-d21a-4a27-86da-49bc10a8267d" >
+			<validation:is-false doc:name="Is false" doc:id="a233c39e-29a1-4a1f-b161-9020f86ec205" expression='#[payload startsWith("Invalid")]'/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="614b03d4-ac49-4eda-9fec-09c6f69779f3" >
+					<raise-error doc:name="Raise error" doc:id="f0c52349-97f0-4a0e-b1ce-0d1aa98833c6" type="APP:ENCRYPT_ERROR" description='#["Error encrypting file: " ++ payload]'/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+        <ee:transform doc:name="Transform Message" doc:id="81201ada-6ff2-488d-afe1-29cbb25612f7">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	property: payload
 }]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+            </ee:message>
+        </ee:transform>
     </flow>
-	<flow name="secure-properties-apiFlow" doc:id="1fe26673-f5ac-45d3-8df0-dbfaa46cca94" >
-		<http:listener doc:name="Listener" doc:id="6fa9aad9-3ef6-4f6c-9e95-ecb18a81d07d" config-ref="secure-properties-api-httpListenerConfig" path="/"/>
-		<parse-template doc:name="Parse Template" doc:id="af5249f0-e9aa-4877-b482-d08b9b058be9" location="index.html"/>
-	</flow>
+    <flow name="secure-properties-apiFlow" doc:id="1fe26673-f5ac-45d3-8df0-dbfaa46cca94">
+        <http:listener doc:name="Listener" doc:id="6fa9aad9-3ef6-4f6c-9e95-ecb18a81d07d" config-ref="secure-properties-api-httpListenerConfig" path="/" />
+        <parse-template doc:name="Parse Template" doc:id="af5249f0-e9aa-4877-b482-d08b9b058be9" location="index.html" />
+    </flow>
 </mule>

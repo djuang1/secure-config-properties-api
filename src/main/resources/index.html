@@ -20,67 +20,214 @@
             </div>
 
             <div class="row">
-                <div class="col-md-12 order-md-1">
-                    <form id="my_form" action="api/string" method="post" enctype="multipart/form-data">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="algorithm">Algorithm</label>
-                                <select class="custom-select d-block w-100" id="algorithm" name="algorithm" required>
-                                    <option value="AES" selected>AES (default)</option>
-                                    <option value="Blowfish">Blowfish</option>
-                                    <option value="DES">DES</option>
-                                    <option value="DESede">DESede</option>
-                                    <option value="RC2">RC2</option>
-                                    <option value="RCA">RCA</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please select an algorithm.
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="state">State</label>
-                                <select class="custom-select d-block w-100" id="mode" name="mode" required>
-                                    <option value="CBC" selected>CBC (default)</option>
-                                    <option value="CFB">CFB</option>
-                                    <option value="ECB">ECB</option>
-                                    <option value="OFB">OFB</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please provide a valid mode.
-                                </div>
-                            </div>
-                        </div>
-                        <!-- algorithm and mode row-->
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="key">Key</label>
-                                <input type="text" class="form-control" id="key" name="key" required />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="value">Value</label>
-                                <input type="text" class="form-control" id="value" name="value" required />
-                            </div>
-                        </div>
-                        <!-- key value row-->
 
-                        <input type="hidden" id="operation" name="operation" value="encrypt" />
-                        <input type="hidden" id="method" name="method" value="string" />
-                        <hr class="mb-4" />
-                        <input id="btn-submit" class="btn btn-primary btn-lg btn-block" type="submit" name="submit" value="Generate" />
-                      
-                        <hr class="mb-4" />
-                          <div class="card text-center">
-                            <div class="card-header">
-                              Result
-                            </div>
-                            <div class="card-body">
-                              <p class="card-text" id="server-results"></p>                              
-                            </div>
-                          </div>  
-                    </form>
-                </div>
+                <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="secure-type-list" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" href="#string" role="tab" aria-controls="string" aria-selected="true">String</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link"  href="#file" role="tab" aria-controls="file" aria-selected="false">File</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" href="#file-level" role="tab" aria-controls="file-level" aria-selected="false">File Level</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="card-body">
+                        
+                         <div class="tab-content mt-3">
+                          <div class="tab-pane active" id="string" role="tabpanel">
+                            <form id="form_string" action="api/string" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="algorithm">Algorithm</label>
+                                        <select class="custom-select d-block w-100" id="algorithm" name="algorithm" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
+                                            <option value="AES" selected>AES (default)</option>
+                                            <option value="Blowfish">Blowfish</option>
+                                            <option value="DES">DES</option>
+                                            <option value="DESede">DESede</option>
+                                            <option value="RC2">RC2</option>
+                                            <option value="RCA">RCA</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an algorithm.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="state">State</label>
+                                        <select class="custom-select d-block w-100" id="mode" name="mode" required>
+                                            <option value="CBC" selected>CBC (default)</option>
+                                            <option value="CFB">CFB</option>
+                                            <option value="ECB">ECB</option>
+                                            <option value="OFB">OFB</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid mode.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- algorithm and mode row-->
+            
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="key">Key</label>
+                                        <input type="text" class="form-control" id="key" name="key" required />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="value">Value</label>
+                                        <input type="text" class="form-control" id="value" name="value" required />
+                                    </div>
+                                </div>
+                                <!-- key value row-->
+            
+                                <input type="hidden" id="operation" name="operation" value="encrypt" />
+                                <input type="hidden" id="method" name="method" value="string" />
+                                <hr class="mb-4" />
+                                <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="submit" value="Generate" />
+                              
+                            </form>
+                            
+                          </div>
+                           
+                          <div class="tab-pane" id="file" role="tabpanel">  
+                            <form id="form_file" action="api/file" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="algorithm">Algorithm</label>
+                                        <select class="custom-select d-block w-100" id="algorithm" name="algorithm" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
+                                            <option value="AES" selected>AES (default)</option>
+                                            <option value="Blowfish">Blowfish</option>
+                                            <option value="DES">DES</option>
+                                            <option value="DESede">DESede</option>
+                                            <option value="RC2">RC2</option>
+                                            <option value="RCA">RCA</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an algorithm.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="state">State</label>
+                                        <select class="custom-select d-block w-100" id="mode" name="mode" required>
+                                            <option value="CBC" selected>CBC (default)</option>
+                                            <option value="CFB">CFB</option>
+                                            <option value="ECB">ECB</option>
+                                            <option value="OFB">OFB</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid mode.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- algorithm and mode row-->
+            
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="key">Key</label>
+                                        <input type="text" class="form-control" id="key" name="key" required />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="value">Output File Name</label>
+                                        <input type="text" class="form-control" id="outputFile" name="outputFile" value="secure-mule-properties.yaml" required />
+                                    </div>
+                                </div>
+                                <!-- key value row-->
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="inputFile">Input File</label>
+                                        <input type="file" class="form-control-file" id="inputFile" name="inputFile">
+                                    </div>
+                                </div>
+                                <!-- key value row-->
+            
+                                <input type="hidden" id="operation" name="operation" value="encrypt" />
+                                <input type="hidden" id="method" name="method" value="string" />
+                                <hr class="mb-4" />
+                                <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="submit" value="Generate" />
+                               
+                            </form>
+                          </div>
+                           
+                          <div class="tab-pane" id="file-level" role="tabpanel">
+                            <form id="form_file_level" action="api/file-level" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="algorithm">Algorithm</label>
+                                        <select class="custom-select d-block w-100" id="algorithm" name="algorithm" data-toggle="tooltip" data-placement="top" title="Tooltip on top" required>
+                                            <option value="AES" selected>AES (default)</option>
+                                            <option value="Blowfish">Blowfish</option>
+                                            <option value="DES">DES</option>
+                                            <option value="DESede">DESede</option>
+                                            <option value="RC2">RC2</option>
+                                            <option value="RCA">RCA</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an algorithm.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="state">State</label>
+                                        <select class="custom-select d-block w-100" id="mode" name="mode" required>
+                                            <option value="CBC" selected>CBC (default)</option>
+                                            <option value="CFB">CFB</option>
+                                            <option value="ECB">ECB</option>
+                                            <option value="OFB">OFB</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid mode.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- algorithm and mode row-->
+            
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="key">Key</label>
+                                        <input type="text" class="form-control" id="key" name="key" required />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="value">Output File Name</label>
+                                        <input type="text" class="form-control" id="outputFile" name="outputFile" value="secure-mule-properties.yaml" required />
+                                    </div>
+                                </div>
+                                <!-- key value row-->
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="inputFile">Input File</label>
+                                        <input type="file" class="form-control-file" id="inputFile" name="inputFile">
+                                    </div>
+                                </div>
+                                <!-- key value row-->
+            
+                                <input type="hidden" id="operation" name="operation" value="encrypt" />
+                                <input type="hidden" id="method" name="method" value="string" />
+                                <hr class="mb-4" />
+                                <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="submit" value="Generate" />
+                              
+                                 
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             </div>
+
+            <hr class="mb-4" />
+            <div class="card text-center">
+              <div class="card-header">
+                Result
+              </div>
+              <div class="card-body">
+                <p class="card-text" id="server-results"></p>                              
+              </div>
+            </div> 
 
             <footer class="my-5 pt-5 text-muted text-center text-small">
                 <p class="mb-1">&copy; 2020 MuleSoft</p>
@@ -94,7 +241,13 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         <script>
-            $("#my_form").submit(function (event) {
+
+            $('#secure-type-list a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+
+            $("#form_string").submit(function (event) {
                 event.preventDefault(); //prevent default action
                 var post_url = $(this).attr("action"); //get form action url
                 var request_method = $(this).attr("method"); //get form GET/POST method
@@ -117,9 +270,120 @@
                       $("#btn-submit").prop("disabled", false);
                     }
                 });
-                //.done(function (response) {
-                //    $("#server-results").html(response);
-                //});
+            });
+
+            $("#form_file").submit(function (event) {
+                event.preventDefault(); //prevent default action
+                var post_url = $(this).attr("action"); //get form action url
+                var request_method = $(this).attr("method"); //get form GET/POST method
+                var form_data = new FormData(this); //Creates new FormData object
+                $.ajax({
+                    url: post_url,
+                    type: request_method,
+                    data: form_data,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (response, status, xhr) {
+                        console.log("SUCCESS : ", response);
+                        console.log("STATUS : ", status);
+
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                        }
+
+                        var type = xhr.getResponseHeader('Content-Type');
+                        var blob = new Blob([response], { type: type });
+
+                        var URL = window.URL || window.webkitURL;
+                        var downloadUrl = URL.createObjectURL(blob);
+
+                        if (filename) {
+                            // use HTML5 a[download] attribute to specify filename
+                            var a = document.createElement("a");
+                            // safari doesn't support this yet
+                            if (typeof a.download === 'undefined') {
+                                window.location = downloadUrl;
+                            } else {
+                                a.href = downloadUrl;
+                                a.download = filename;
+                                document.body.appendChild(a);
+                                a.click();
+                            }
+                        } else {
+                            window.location = downloadUrl;
+                        }
+
+                        setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    },
+                    error: function (e) {
+                      $("#server-results").text(e.responseJSON.message);
+                      console.log("ERROR : ", e);
+                      $("#btn-submit").prop("disabled", false);
+                    }
+                });
+            });
+
+            $("#form_file_level").submit(function (event) {
+                event.preventDefault(); //prevent default action
+                var post_url = $(this).attr("action"); //get form action url
+                var request_method = $(this).attr("method"); //get form GET/POST method
+                var form_data = new FormData(this); //Creates new FormData object
+                $.ajax({
+                    url: post_url,
+                    type: request_method,
+                    data: form_data,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (response, status, xhr) {
+                        console.log("SUCCESS : ", response);
+                        console.log("STATUS : ", status);
+
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                        }
+
+                        var type = xhr.getResponseHeader('Content-Type');
+                        var blob = new Blob([response], { type: type });
+
+                        var URL = window.URL || window.webkitURL;
+                        var downloadUrl = URL.createObjectURL(blob);
+
+                        if (filename) {
+                            // use HTML5 a[download] attribute to specify filename
+                            var a = document.createElement("a");
+                            // safari doesn't support this yet
+                            if (typeof a.download === 'undefined') {
+                                window.location = downloadUrl;
+                            } else {
+                                a.href = downloadUrl;
+                                a.download = filename;
+                                document.body.appendChild(a);
+                                a.click();
+                            }
+                        } else {
+                            window.location = downloadUrl;
+                        }
+
+                        setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    },
+                    error: function (e) {
+                      $("#server-results").text(e.responseJSON.message);
+                      console.log("ERROR : ", e);
+                      $("#btn-submit").prop("disabled", false);
+                    }
+                });
             });
         </script>
     </body>
