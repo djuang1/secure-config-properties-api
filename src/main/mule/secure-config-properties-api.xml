@@ -156,7 +156,6 @@ output application/json
 			<validation:is-true doc:name="Is true" doc:id="5f2acb67-f0e2-41bf-95f7-e9ca03f3bb66" expression="#[vars.contentType == 'application/x-yaml' or vars.contentType == 'text/yaml']"/>
 			<error-handler >
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4a63cde3-22d2-4c1d-b911-7aa17e5d09e0" >
-					<logger level="INFO" doc:name="Logger" doc:id="1f1b3d87-9d2d-4e41-9049-ef42be40a067" message="#[payload]"/>
 					<raise-error doc:name="Raise error" doc:id="3e862e37-7cf0-4aac-bc9a-87ea39b30db4" type="APP:FILE_TYPE" description="Wrong input file type. File must be in *.yaml format."/>
 				</on-error-propagate>
 			</error-handler>
@@ -183,7 +182,14 @@ output application/json
 	arg6: vars.outputFile
 }]]]></java:args>
 		</java:invoke>
-				<logger level="INFO" doc:name="Logger" doc:id="dfdaa84d-73e3-4183-b22d-6abb2240f6ba" />
+		<try doc:name="Try" doc:id="22777d68-3916-47c3-8e1b-2fb1a590477f" >
+			<validation:is-false doc:name="Is false" doc:id="8abdf8c7-3424-439c-934e-9d13816dbc47" expression='#[payload startsWith("Invalid")]'/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5a8d98de-383a-4a50-9f25-790b99866aa0" >
+					<raise-error doc:name="Raise error" doc:id="ab634444-658e-4a24-97cc-6905e7cb0dee" type="APP:ENCRYPT_ERROR" description='#["Error encrypting file: " ++ payload]'/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
 				<set-variable value='#[%dw 2.0
 import * from dw::core::Binaries
 output application/java
