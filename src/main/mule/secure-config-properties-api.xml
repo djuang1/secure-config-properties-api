@@ -256,7 +256,7 @@ output application/java
         <set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="503a6af9-9a72-4881-bf1a-114b8c2eeedb" variableName="operation" />
         <set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="17b77276-0fe0-4265-9788-17ef2089793d" variableName="algorithm" />
         <set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="2ac2d1c8-f76f-4d29-8bc7-8e0831c1b679" variableName="mode" />
-        <set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="fd424515-e028-4176-8024-684387a731ea" variableName="key" />
+        <set-variable value='#[output application/java --- payload.parts.key.content replace "%" with "%%"]' doc:name="key" doc:id="fd424515-e028-4176-8024-684387a731ea" variableName="key" />
         <set-variable value="#[output application/java --- payload.parts.value.content]" doc:name="value" doc:id="acf2bf95-8c1d-4db8-b114-b7ffaa1f6b2d" variableName="value" />
         <java:new doc:name="New" doc:id="4462a417-6a11-4b66-993f-a0435c734d3b" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()" />
         <java:invoke doc:name="Invoke" doc:id="99b0131d-d336-4102-8778-7fbf8b16991c" instance="#[payload]" class="com.dejim.SecurePropertiesWrapper" method="secureString(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -267,7 +267,7 @@ output application/java
 	arg1: vars.operation,
 	arg2: vars.algorithm,
 	arg3: vars.mode,
-	arg4: vars.key,
+	arg4: vars.key as String,
 	arg5: vars.value
 }]]]></java:args>
         </java:invoke>
