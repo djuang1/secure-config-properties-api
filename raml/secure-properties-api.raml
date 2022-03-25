@@ -1,0 +1,121 @@
+#%RAML 1.0
+title: Secure Properties API
+description: API to encrypt and decrypt MuleSoft properties
+baseUri: http://localhost:8081/api
+version: 1.0.0       
+
+types:   
+  property:
+    description: Encrypted/decrypted property
+    type: object
+    properties:
+      property:
+        type: string
+          
+/string:
+  displayName: Encrypt Text Strings
+  description: Use the following to encrypt or decrypt a text string. 
+  post:
+    body:
+      multipart/form-data:
+        properties: 
+          operation:
+            required: true
+            default: encrypt
+            type: string
+            enum: [encrypt, decrypt]
+          algorithm:
+            required: true
+            default: Blowfish
+            type: string
+            enum: [AES, Blowfish, DES, DESede, RC2, RCA]          
+          mode:
+            required: true
+            type: string
+            default: CBC
+            enum: [CBC, CFB, ECB, OFB]
+          key:
+            type: string
+            required: true
+          value:
+            type: string
+            required: true
+    responses:
+      200:
+        body:
+          application/json: 
+            type: property
+            example:
+              property: "8q5e1+jy0cND2iV2WPThahmz6XsDwB6Z"
+            
+/file:
+  displayName: Encrypt Files
+  description: Use the following syntax to encrypt or decrypt all values inside a properties file.
+  post:
+    body:
+      multipart/form-data:
+        properties: 
+          operation:
+            required: true
+            default: encrypt
+            type: string
+            enum: [encrypt, decrypt]
+          algorithm:
+            required: true
+            default: Blowfish
+            type: string
+            enum: [AES, Blowfish, DES, DESede, RC2, RCA]          
+          mode:
+            required: true
+            type: string
+            default: CBC
+            enum: [CBC, CFB, ECB, OFB]
+          key:
+            type: string
+            required: true        
+          inputFile: 
+            displayName: Input file location
+            type: file
+            fileTypes: ['*/yaml']
+            maxLength: 10485760 # 10 MB = 10485760 Bytes
+          outputFile:
+            displayName: Output file name
+            type: string
+            default: secure-properties.yaml
+            required: true
+/file-level:
+  displayName: Encrypt All the Content of a File
+  description: Use the following syntax to encrypt or decrypt all the content of a properties file.
+  post:
+    body:
+      multipart/form-data:
+        properties: 
+          operation:
+            required: true
+            default: encrypt
+            type: string
+            enum: [encrypt, decrypt]
+          algorithm:
+            required: true
+            default: Blowfish
+            type: string
+            enum: [AES, Blowfish, DES, DESede, RC2, RCA]          
+          mode:
+            required: true
+            type: string
+            default: CBC
+            enum: [CBC, CFB, ECB, OFB]
+          key:
+            type: string
+            required: true        
+          inputFile: 
+            displayName: Input file
+            type: file
+            fileTypes: ['*/yaml']
+            maxLength: 10485760 # 10 MB = 10485760 Bytes
+          outputFile:
+            displayName: Output file name
+            type: string
+            default: secure-properties.yaml
+            required: true
+
