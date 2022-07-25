@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 			</tls:context>
 		</http:listener-connection>
     </http:listener-config>
-    <apikit:config name="secure-properties-api-config" api="resource::b85b361d-0842-4b70-af37-2723c2c3ae7e:Secure-Properties-API:2.0.2:raml:zip:secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="secure-properties-api-config" api="api/secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <file:config name="File_Config" doc:name="File Config" doc:id="17a4b774-2a13-4ac3-be1c-22f25c0ea68e" />
     <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="bf5b950e-6d36-4f3a-b4fa-f840f610fd47" file="config.secure.dev.yaml" key="${securePropertiesKey}" >
 		<secure-properties:encrypt algorithm="Blowfish" />

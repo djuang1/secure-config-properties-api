@@ -50,13 +50,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>b85b361d-0842-4b70-af37-2723c2c3ae7e</groupId>
-			<artifactId>Secure-Properties-API</artifactId>
-			<version>2.0.2</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>com.mulesoft.modules</groupId>
 			<artifactId>mule-secure-configuration-property-module</artifactId>
 			<version>1.2.3</version>
