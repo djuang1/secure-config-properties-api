@@ -2,7 +2,7 @@
 title: Secure Properties API
 description: API to encrypt and decrypt MuleSoft properties
 baseUri: http://localhost:8081/api
-version: 1.0.0       
+version: 1.0.0
 
 types:
   configuraiton:
@@ -54,11 +54,11 @@ types:
 
 /string:
   displayName: Encrypt Text Strings
-  description: Use the following to encrypt or decrypt a text string. 
+  description: Use the following to encrypt or decrypt a text string.
   post:
     body:
       multipart/form-data:
-        properties: 
+        properties:
           operation:
             required: true
             default: encrypt
@@ -66,9 +66,9 @@ types:
             enum: [encrypt, decrypt]
           algorithm:
             required: true
-            default: Blowfish
+            default: AES
             type: string
-            enum: [AES, Blowfish, DES, DESede, RC2, RCA]          
+            enum: [AES, Blowfish, DES, DESede, RC2, RCA]
           mode:
             required: true
             type: string
@@ -83,18 +83,18 @@ types:
     responses:
       200:
         body:
-          application/json: 
+          application/json:
             type: property
             example:
               property: "8q5e1+jy0cND2iV2WPThahmz6XsDwB6Z"
-            
+
 /file:
   displayName: Encrypt Files
   description: Use the following syntax to encrypt or decrypt all values inside a properties file.
   post:
     body:
       multipart/form-data:
-        properties: 
+        properties:
           operation:
             required: true
             default: encrypt
@@ -104,7 +104,7 @@ types:
             required: true
             default: Blowfish
             type: string
-            enum: [AES, Blowfish, DES, DESede, RC2, RCA]          
+            enum: [AES, Blowfish, DES, DESede, RC2, RCA]
           mode:
             required: true
             type: string
@@ -112,8 +112,8 @@ types:
             enum: [CBC, CFB, ECB, OFB]
           key:
             type: string
-            required: true        
-          inputFile: 
+            required: true
+          inputFile:
             displayName: Input file location
             type: file
             fileTypes: ['*/yaml']
@@ -123,13 +123,14 @@ types:
             type: string
             default: secure-properties.yaml
             required: true
+
 /file-level:
   displayName: Encrypt All the Content of a File
   description: Use the following syntax to encrypt or decrypt all the content of a properties file.
   post:
     body:
       multipart/form-data:
-        properties: 
+        properties:
           operation:
             required: true
             default: encrypt
@@ -139,7 +140,7 @@ types:
             required: true
             default: Blowfish
             type: string
-            enum: [AES, Blowfish, DES, DESede, RC2, RCA]          
+            enum: [AES, Blowfish, DES, DESede, RC2, RCA]
           mode:
             required: true
             type: string
@@ -147,8 +148,8 @@ types:
             enum: [CBC, CFB, ECB, OFB]
           key:
             type: string
-            required: true        
-          inputFile: 
+            required: true
+          inputFile:
             displayName: Input file
             type: file
             fileTypes: ['*/yaml']
@@ -158,4 +159,3 @@ types:
             type: string
             default: secure-properties.yaml
             required: true
-
