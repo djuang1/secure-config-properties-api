@@ -13,13 +13,13 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
     <apikit:config name="secure-properties-api-config" api="api/secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <file:config name="File_Config" doc:name="File Config" doc:id="17a4b774-2a13-4ac3-be1c-22f25c0ea68e" />
 	<flow name="secure-properties-api-main">
-        <http:listener config-ref="secure-properties-api-httpListenerConfig" path="/api/*">
+        <http:listener config-ref="secure-properties-api-httpListenerConfig" path="${http.path}">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="secure-properties-api-config" />
@@ -135,13 +135,13 @@ output application/json
         </error-handler>
     </flow>
     <flow name="secure-properties-api-console">
-        <http:listener config-ref="secure-properties-api-httpListenerConfig" path="/console/*">
+        <http:listener config-ref="secure-properties-api-httpListenerConfig" path="${http.console}">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:console config-ref="secure-properties-api-config" />
