@@ -11,7 +11,9 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 		</http:listener-connection>
     </http:listener-config>
     <apikit:config name="secure-properties-api-config" api="api/secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <file:config name="File_Config" doc:name="File Config" doc:id="17a4b774-2a13-4ac3-be1c-22f25c0ea68e" />
+    <file:config name="File_Config" doc:name="File Config" doc:id="17a4b774-2a13-4ac3-be1c-22f25c0ea68e" >
+		<file:connection workingDir="${mule.home}" />
+	</file:config>
 	<flow name="secure-properties-api-main">
         <http:listener config-ref="secure-properties-api-httpListenerConfig" path="${http.path}">
             <http:response statusCode="#[vars.httpStatus default 200]">
