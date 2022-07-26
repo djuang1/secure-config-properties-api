@@ -1,0 +1,13 @@
+http:
+  path: "/api/*"
+  console: "/console/*"
+
+configuration:
+  # Disable decryption of properties / files
+  allowDecryption: "true"
+  # Provide the encryption key on the server side. If set, the `key` field won't be displayed in the UI and users won't be able to set the encryption key.
+  encryptionKey: "" # e.g. ${config.encryptionKey}
+  # Default algorithm and mode to select in the UI.
+  default:
+    algorithm: "AES"
+    mode: "CBC"

@@ -4,14 +4,54 @@ description: API to encrypt and decrypt MuleSoft properties
 baseUri: http://localhost:8081/api
 version: 1.0.0       
 
-types:   
+types:
+  configuraiton:
+    description: Configuration of the application
+    type: object
+    properties:
+      defaultAlgorithm:
+        displayName: Default Algorithm
+        description: Specify default algorithm to select from UI.
+        type: string
+        default: AES
+        enum: [AES, Blowfish, DES, DESede, RC2, RCA]
+      defaultMode:
+        displayName: Default Mode
+        description: Specify default mode to select from UI.
+        type: string
+        default: CBC
+        enum: [CBC, CFB, ECB, OFB]
+      allowDecryption:
+        displayName: Allow Decryption
+        description: Allow decryption of content. False by default to avoid security issues.
+        type: boolean
+        default: false
+      encryptionKeyFromUser:
+        displayName: Get Encryption Key From User
+        description: Allow the user to specify the encryption key.
+        type: boolean
+        default: true
+
   property:
     description: Encrypted/decrypted property
     type: object
     properties:
       property:
         type: string
-          
+
+/configuration:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            example:
+              defaultAlgorithm: "AES"
+              defaultMode: "CBC"
+              allowDecryption: false
+              encryptionKeyFromUser: true
+
 /string:
   displayName: Encrypt Text Strings
   description: Use the following to encrypt or decrypt a text string. 

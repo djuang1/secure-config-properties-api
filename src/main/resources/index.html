@@ -83,11 +83,11 @@
                                 <!-- algorithm and mode row-->
             
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col mb-3">
                                         <label for="key">Key</label>
                                         <input type="text" class="form-control" id="key" name="key" required />
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col mb-3">
                                         <label for="value">Value</label>
                                         <input type="text" class="form-control" id="value" name="value" required />
                                     </div>
@@ -145,11 +145,11 @@
                                 <!-- algorithm and mode row-->
             
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col mb-3">
                                         <label for="key">Key</label>
                                         <input type="text" class="form-control" id="key" name="key" required />
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col mb-3">
                                         <label for="value">Output File Name</label>
                                         <input type="text" class="form-control" id="outputFile" name="outputFile" value="secure-mule-properties.yaml" required />
                                     </div>
@@ -214,11 +214,11 @@
                                 <!-- algorithm and mode row-->
             
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col mb-3">
                                         <label for="key">Key</label>
                                         <input type="text" class="form-control" id="key" name="key" required />
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col mb-3">
                                         <label for="value">Output File Name</label>
                                         <input type="text" class="form-control" id="outputFile" name="outputFile" value="secure-mule-properties.yaml" required />
                                     </div>
@@ -270,10 +270,40 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 
         <script>
+            var configuration = undefined;
+
+            function applyConfiguration(elementId) {
+                if (configuration != undefined) {
+                    $(elementId).find("#algorithm").val(configuration.defaultAlgorithm).change();
+                    $(elementId).find("#mode").val(configuration.defaultMode).change();
+
+                    // If decryption is not allowed, disable the option.
+                    if (configuration.allowDecryption == false) {
+                        $(elementId).find("#operation").val("encrypt").prop("disabled", true).change();
+                    }
+
+                    if (configuration.encryptionKeyFromUser == false) {
+                        $(elementId).find("#key").parent().remove();
+                    }
+                }
+            }
+
+            $.ajax({
+                url: "api/configuration",
+                type: "GET",
+                success: function (data) {
+                    configuration = data;
+                    applyConfiguration("#string");
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            })
 
             $('#secure-type-list a').on('click', function (e) {
-                e.preventDefault()
-                $(this).tab('show')
+                e.preventDefault();
+                $(this).tab('show');
+                applyConfiguration("#" + $(this).attr("aria-controls"));
             })
 
             $("#form_string").submit(function (event) {

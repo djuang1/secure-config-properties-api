@@ -5,6 +5,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="ad0dea58-59c3-4c39-962b-da67a90c675e" file="config.example.yaml" />
     <http:listener-config name="secure-properties-api-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8082">
 		</http:listener-connection>
@@ -116,6 +117,21 @@ output application/json
 					</ee:variables>
 				</ee:transform>
 			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2a71dd3c-5245-4f47-9e0a-3f1bf490869b" type="APP:DECRYPT_NOT_AUTHORIZED">
+				<ee:transform doc:name="Transform Message" doc:id="97a0592f-a8b4-4471-8c85-a92361fc1b81" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Decryption of secure properties is not enabled."
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[422]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</on-error-propagate>
         </error-handler>
     </flow>
     <flow name="secure-properties-api-console">
@@ -147,7 +163,25 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="post:\file-level:multipart\form-data:secure-properties-api-config">
+    <flow name="get:\configuration:secure-properties-api-config" doc:id="ea52ab82-8a96-4de0-bda5-f56318f0802f" >
+		<logger level="INFO" doc:name="Logger" doc:id="83d82695-b70c-49c4-9deb-0f0aae6eaf21" message="get:\configuration:secure-properties-api-config" />
+		<ee:transform doc:name="Transform Message" doc:id="96245f73-2da3-4e1b-be34-f2adc518c376" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import toBoolean from dw::util::Coercions
+output application/json
+---
+{
+	defaultAlgorithm: Mule::p("configuration.default.algorithm") default "AES",
+	defaultMode: Mule::p("configuration.default.mode") default "CBC",
+	encryptionKeyFromUser: isEmpty(Mule::p("configuration.encryptionKey")) default true,
+	allowDecryption: toBoolean(Mule::p("configuration.allowDecryption"))
+					 default if (isEmpty(Mule::p("configuration.encryptionKey"))) true else false
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="post:\file-level:multipart\form-data:secure-properties-api-config">
     	<logger level="INFO" message="post:\file-level:multipart\form-data:secure-properties-api-config" />
 		<set-variable value="#[output application/java --- payload.parts.inputFile.headers.'Content-Type']" doc:name="contentType" doc:id="cc09c987-519b-43a2-9f40-f27f9875948e" variableName="contentType"/>
 		<try doc:name="Try" doc:id="5a059cd9-8bd5-4335-b8d1-848c5c7fbb4c" >
@@ -158,10 +192,7 @@ output application/json
 				</on-error-propagate>
 			</error-handler>
 		</try>
-		<set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="6c456b40-8fca-4fee-8df7-7399b4d32d77" variableName="operation" />
-				<set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="7950deb8-1724-4fb7-903c-ced98b2c90c7" variableName="algorithm" />
-				<set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="eaca48e5-26be-419c-b185-0124e3beb161" variableName="mode" />
-				<set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="d7352ea0-2bd8-49c5-a9a4-b78c733d4011" variableName="key" />
+		<flow-ref doc:name="Prepare encryption" doc:id="db458856-ff90-4789-9bc7-0357cad1facd" name="secure-config-properties-prepare-encryption" />
 				<set-variable value="#[output application/java --- payload.parts.outputFile.content]" doc:name="outputFile" doc:id="dfed26cd-f445-434d-a188-684291f546af" variableName="outputFile" />
 				<file:write doc:name="Write" doc:id="b52120c7-f225-4bf7-af46-934d066c6803" config-ref="File_Config" path="#[p('app.home') ++ &quot;/file.yaml&quot;]">
 			<file:content><![CDATA[#[payload.parts.inputFile.content]]]></file:content>
@@ -207,10 +238,7 @@ output application/java
 				</on-error-propagate>
 			</error-handler>
 		</try>
-        <set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="1c4be073-8e52-4036-b62d-ee49868effa4" variableName="operation" />
-        <set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="1830683f-ea7d-4f58-a697-35b91527db81" variableName="algorithm" />
-        <set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="a0cd57fb-de67-47e7-91e4-cab79a5da07c" variableName="mode" />
-        <set-variable value="#[output application/java --- payload.parts.key.content]" doc:name="key" doc:id="a64ef7e8-5516-4498-84df-fb63bbc351de" variableName="key" />
+        <flow-ref doc:name="Prepare encryption" doc:id="bddbb396-3f4d-475e-93ae-a6f54bea5d00" name="secure-config-properties-prepare-encryption" />
         <set-variable value="#[output application/java --- payload.parts.outputFile.content]" doc:name="outputFile" doc:id="ac653e78-4ce0-4196-b02b-91abb0bdc414" variableName="outputFile" />
 		<file:write doc:name="Write" doc:id="f73c2fb6-c040-4569-a44b-1885c5079a9d" config-ref="File_Config" path="#[p('app.home') ++ &quot;/file.yaml&quot;]" >
 			<file:content ><![CDATA[#[payload.parts.inputFile.content]]]></file:content>
@@ -247,12 +275,9 @@ output application/java
     </flow>
     <flow name="post:\string:multipart\form-data:secure-properties-api-config">
         <logger level="INFO" doc:name="Logger" doc:id="e74daed2-148c-4e2b-8cb8-4ee5dcd47071" />
-        <set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="503a6af9-9a72-4881-bf1a-114b8c2eeedb" variableName="operation" />
-        <set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="17b77276-0fe0-4265-9788-17ef2089793d" variableName="algorithm" />
-        <set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="2ac2d1c8-f76f-4d29-8bc7-8e0831c1b679" variableName="mode" />
-        <set-variable value='#[output application/java --- payload.parts.key.content replace "%" with "%%"]' doc:name="key" doc:id="fd424515-e028-4176-8024-684387a731ea" variableName="key" />
-        <set-variable value="#[output application/java --- payload.parts.value.content]" doc:name="value" doc:id="acf2bf95-8c1d-4db8-b114-b7ffaa1f6b2d" variableName="value" />
-        <java:new doc:name="New" doc:id="4462a417-6a11-4b66-993f-a0435c734d3b" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()" />
+        <flow-ref doc:name="Prepare encryption" doc:id="7abe11ec-c871-44b3-9457-172f9344188d" name="secure-config-properties-prepare-encryption"/>
+		<set-variable value="#[output application/java --- payload.parts.value.content]" doc:name="value" doc:id="acf2bf95-8c1d-4db8-b114-b7ffaa1f6b2d" variableName="value" />
+		<java:new doc:name="New" doc:id="4462a417-6a11-4b66-993f-a0435c734d3b" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()" />
         <java:invoke doc:name="Invoke" doc:id="99b0131d-d336-4102-8778-7fbf8b16991c" instance="#[payload]" class="com.dejim.SecurePropertiesWrapper" method="secureString(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
             <java:args><![CDATA[#[output application/java
 ---
@@ -284,7 +309,18 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="secure-properties-apiFlow" doc:id="1fe26673-f5ac-45d3-8df0-dbfaa46cca94">
+    <sub-flow name="secure-config-properties-prepare-encryption" doc:id="2614bc68-2a33-4dca-b782-416a1fc7670a" >
+		<validation:any doc:name="Any" doc:id="d10adadd-c3be-49d1-911e-51f495b550fb">
+			<error-mapping sourceType="VALIDATION:MULTIPLE" targetType="APP:DECRYPT_NOT_AUTHORIZED" />
+			<validation:is-true doc:name="Decryption enabled" doc:id="1206439c-897c-4dc6-8f5d-387d26c6e9bb" expression='#[(dw::util::Coercions::toBoolean(Mule::p("configuration.allowDecryption")) default true) == true]' message="Decryption is not enabled."/>
+			<validation:is-true doc:name="Decryption disabled but requested" doc:id="437d06fd-a90e-4697-8f38-e70b72640753" expression='#[((dw::util::Coercions::toBoolean(Mule::p("configuration.allowDecryption")) default true) == false) and payload.parts.operation.content != "decrypt"]' message="Decryption is not authorized."/>
+		</validation:any>
+		<set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="503a6af9-9a72-4881-bf1a-114b8c2eeedb" variableName="operation" />
+		<set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="17b77276-0fe0-4265-9788-17ef2089793d" variableName="algorithm" />
+		<set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="2ac2d1c8-f76f-4d29-8bc7-8e0831c1b679" variableName="mode" />
+		<set-variable doc:name="key" doc:id="fd424515-e028-4176-8024-684387a731ea" variableName="key" value='#[output application/java&#10;--- &#10;if (isEmpty(Mule::p("configuration.encryptionKey")))&#10;	(payload.parts.key.content replace "%" with "%%") default ""&#10;else&#10;	Mule::p("configuration.encryptionKey")]' />
+	</sub-flow>
+	<flow name="secure-properties-index" doc:id="1fe26673-f5ac-45d3-8df0-dbfaa46cca94">
         <http:listener doc:name="Listener" doc:id="6fa9aad9-3ef6-4f6c-9e95-ecb18a81d07d" config-ref="secure-properties-api-httpListenerConfig" path="/" />
         <parse-template doc:name="Parse Template" doc:id="af5249f0-e9aa-4877-b482-d08b9b058be9" location="index.html" />
     </flow>
