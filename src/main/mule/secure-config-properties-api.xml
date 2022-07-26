@@ -274,7 +274,7 @@ output application/java
          
     </flow>
     <flow name="post:\string:multipart\form-data:secure-properties-api-config">
-        <logger level="INFO" doc:name="Logger" doc:id="e74daed2-148c-4e2b-8cb8-4ee5dcd47071" />
+        <logger level="INFO" doc:name="Logger" doc:id="e74daed2-148c-4e2b-8cb8-4ee5dcd47071" message="post:\string:multipart\form-data:secure-properties-api-config"/>
         <flow-ref doc:name="Prepare encryption" doc:id="7abe11ec-c871-44b3-9457-172f9344188d" name="secure-config-properties-prepare-encryption"/>
 		<set-variable value="#[output application/java --- payload.parts.value.content]" doc:name="value" doc:id="acf2bf95-8c1d-4db8-b114-b7ffaa1f6b2d" variableName="value" />
 		<java:new doc:name="New" doc:id="4462a417-6a11-4b66-993f-a0435c734d3b" class="com.dejim.SecurePropertiesWrapper" constructor="SecurePropertiesWrapper()" />
