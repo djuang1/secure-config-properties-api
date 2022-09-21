@@ -1,30 +1,28 @@
 # MuleSoft Secure Configuration Properties API and Tool
 
-### Overview
+## Overview
 
-This project wraps the [MuleSoft Secure Properties Tool](https://docs.mulesoft.com/mule-runtime/4.2/secure-configuration-properties#secure_props_tool) with an API and exposes a web based tool to allow you create secure properties for your Mule project.
+This project wraps the [MuleSoft Secure Properties Tool](https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties#secure_props_tool) with an API and exposes a web based tool to allow you create secure properties for your Mule project.
 
-You can find the tool here:
+It supports the following features:
+- Encrypt and decrypt individual string properties, all properties of a file, and file level encryption.
+- Select any [algorithm and mode](https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties#supported_crypto) supported by the tool and set their defaults values.
+- Disable decryption using a configuration.
+- Provide the encryption key from the environment or a configuration file. 
 
-https://secure-properties-api.us-e1.cloudhub.io/
+You can find an online version of the tool on [Cloudhub](https://secure-properties-api.us-e1.cloudhub.io/) as well as its [API](https://secure-properties-api.us-e1.cloudhub.io/console).
 
-and the API here:
+## Deploying the tool
 
-https://secure-properties-api.us-e1.cloudhub.io/console
+- Clone the project somewhere.
+- [Download the Secure Property Tool](https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties#secure_props_tool) from Mulesoft' docuemntation.
+- Copy the jar in `src/main/resources/`.
+- Configure the application based on `src/main/resources/config.example.yaml` and extend the app to your need (eanble HTTP, add a TLS keystore, multiple environments ...).
+- Deploy the application in your runtime.
+- Encrypt and decrypt content using the application UI or API.
 
-### Steps
-You can encrypt configuration properties in your Mule applications. To create secure configuration properties, follow the steps below:
+For more information, read the documentation about [securing configuration properties](https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties).
 
-1. Create a secure configuration properties file in your Mule application. (e.g. src/main/resources/config.yaml)
-1. Deploy this project or open this URL - https://secure-properties-api.us-e1.cloudhub.io/ and encrypt your properties. 
-1. Define secure properties in the file by enclosing the encrypted values from the previous step between the sequence ![value]. You can see an example below.
-    ```
-    encrypted:
-        value1: "![nXCoBCew=]"
-    ```
-1. Configure the file in the project with the `Mule Secure Configuration Properties Extension` module. The file must point to or include the decryption key.
-1. Reference the secure properties in your XML by prefixing the properties with `secure::`
-    ```
-    <global-property name="prop" value="my-${secure::encrypted.value1}"/>
-    ```
+## Authors
 
+Created by [Dejim Juang](https://github.com/djuang1) with the contribution of [Gauthier POGAM--LE MONTAGNER](https://github.com/GauthierPLM).

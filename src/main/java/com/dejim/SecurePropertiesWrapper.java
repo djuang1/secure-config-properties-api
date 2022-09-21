@@ -3,7 +3,6 @@ package com.dejim;
 import java.io.*;
 
 public class SecurePropertiesWrapper {
-
 	public SecurePropertiesWrapper() {
 
 	}
@@ -13,8 +12,7 @@ public class SecurePropertiesWrapper {
 		String line;
 		Process process;
 
-		String toolString = "java -jar " + appHome + "/secure-properties-tool.jar string " + operation + " " + algorithm + " " + mode + " " + key + " ";
-		//System.out.print(toolString + "\n");
+		String toolString = "java -cp " + appHome + "/secure-properties-tool.jar com.mulesoft.tools.SecurePropertiesTool string " + operation + " " + algorithm + " " + mode + " " + key + " ";
 		try {
 			value = value.replace("%", "%%");
 			process = Runtime.getRuntime().exec(String.format(toolString + value));
@@ -25,9 +23,9 @@ public class SecurePropertiesWrapper {
 			while ((line = reader.readLine()) != null) {
 				response.append(line);
 			}
-			while ((line = error.readLine()) != null) {
+			/*while ((line = error.readLine()) != null) {
 				response.append(line);
-			}
+			}*/
 		} catch (IOException e1) {
 		} catch (InterruptedException e2) {
 		}
@@ -39,7 +37,7 @@ public class SecurePropertiesWrapper {
 		String line;
 		Process process;
 
-		String toolString = "java -jar " + appHome + "/secure-properties-tool.jar file " + operation + " " + algorithm + " " + mode + " " + key + " " + inputFileLocation + " " + appHome + "/" + outputFile;
+		String toolString = "java -cp " + appHome + "/secure-properties-tool.jar com.mulesoft.tools.SecurePropertiesTool file " + operation + " " + algorithm + " " + mode + " " + key + " " + inputFileLocation + " " + appHome + "/" + outputFile;
 		try {
 
 			process = Runtime.getRuntime().exec(String.format(toolString));
@@ -50,9 +48,9 @@ public class SecurePropertiesWrapper {
 			while ((line = reader.readLine()) != null) {
 				response.append(line);
 			}
-			while ((line = error.readLine()) != null) {
+			/*while ((line = error.readLine()) != null) {
 				response.append(line);
-			}
+			}*/
 		} catch (IOException e1) {
 		} catch (InterruptedException e2) {
 		}
@@ -64,7 +62,7 @@ public class SecurePropertiesWrapper {
 		String line;
 		Process process;
 
-		String toolString = "java -jar " + appHome + "/secure-properties-tool.jar file-level " + operation + " " + algorithm + " " + mode + " " + key + " " + inputFileLocation + " " + appHome + "/" + outputFile;
+		String toolString = "java -cp " + appHome + "/secure-properties-tool.jar com.mulesoft.tools.SecurePropertiesTool file-level " + operation + " " + algorithm + " " + mode + " " + key + " " + inputFileLocation + " " + appHome + "/" + outputFile;
 		try {
 
 			process = Runtime.getRuntime().exec(String.format(toolString));
@@ -75,9 +73,9 @@ public class SecurePropertiesWrapper {
 			while ((line = reader.readLine()) != null) {
 				response.append(line);
 			}
-			while ((line = error.readLine()) != null) {
+			/*while ((line = error.readLine()) != null) {
 				response.append(line);
-			}
+			}*/
 		} catch (IOException e1) {
 		} catch (InterruptedException e2) {
 		}
