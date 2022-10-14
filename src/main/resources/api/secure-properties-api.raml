@@ -60,24 +60,35 @@ types:
       multipart/form-data:
         properties:
           operation:
+            displayName: Operation
+            description: |
+              Encrypt or decrypt a property value.
+              Based on the API configuration, decrypting content might not be authorized.
             required: true
             default: encrypt
             type: string
             enum: [encrypt, decrypt]
           algorithm:
+            displayName: Encryption Algorithm
             required: true
             default: AES
             type: string
             enum: [AES, Blowfish, DES, DESede, RC2, RCA]
           mode:
+            displayName: Encryption Mode
             required: true
             type: string
             default: CBC
             enum: [CBC, CFB, ECB, OFB]
           key:
+            displayName: Encryption Key
+            description: |
+              Based on the API configuraiton, the key might be provided by the server.
             type: string
-            required: true
+            required: false
           value:
+            displayName: Value
+            description: Value that will be encrypted or decrypted.
             type: string
             required: true
     responses:
@@ -96,23 +107,32 @@ types:
       multipart/form-data:
         properties:
           operation:
+            displayName: Operation
+            description: |
+              Encrypt or decrypt all values inside a property file.
+              Based on the API configuration, decrypting content might not be authorized.
             required: true
             default: encrypt
             type: string
             enum: [encrypt, decrypt]
           algorithm:
+            displayName: Encryption Algorithm
             required: true
-            default: Blowfish
+            default: AES
             type: string
             enum: [AES, Blowfish, DES, DESede, RC2, RCA]
           mode:
+            displayName: Encryption Mode
             required: true
             type: string
             default: CBC
             enum: [CBC, CFB, ECB, OFB]
           key:
+            displayName: Encryption Key
+            description: |
+              Based on the API configuraiton, the key might be provided by the server.
             type: string
-            required: true
+            required: false
           inputFile:
             displayName: Input file location
             type: file
@@ -132,23 +152,32 @@ types:
       multipart/form-data:
         properties:
           operation:
+            displayName: Operation
+            description: |
+              Encrypt or decrypt all the content of a property file.
+              Based on the API configuration, decrypting content might not be authorized.
             required: true
             default: encrypt
             type: string
             enum: [encrypt, decrypt]
           algorithm:
+            displayName: Encryption Algorithm
             required: true
-            default: Blowfish
+            default: AES
             type: string
             enum: [AES, Blowfish, DES, DESede, RC2, RCA]
           mode:
+            displayName: Encryption Mode
             required: true
             type: string
             default: CBC
             enum: [CBC, CFB, ECB, OFB]
           key:
+            displayName: Encryption Key
+            description: |
+              Based on the API configuraiton, the key might be provided by the server.
             type: string
-            required: true
+            required: false
           inputFile:
             displayName: Input file
             type: file
