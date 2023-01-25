@@ -14,7 +14,7 @@ public class SecurePropertiesWrapper {
 		Process process;
 
 		String toolString = "java -jar " + appHome + "/secure-properties-tool.jar string " + operation + " " + algorithm + " " + mode + " " + key + " ";
-		//System.out.print(toolString + "\n");
+
 		try {
 			value = value.replace("%", "%%");
 			process = Runtime.getRuntime().exec(String.format(toolString + value));

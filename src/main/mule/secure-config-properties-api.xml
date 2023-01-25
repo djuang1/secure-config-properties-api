@@ -2,16 +2,13 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
     <http:listener-config name="secure-properties-api-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8082" protocol="HTTPS">
-            <tls:context>
-                <tls:key-store type="jks" path="keystore.jks" keyPassword="${secure::keystore.password}" password="${secure::keystore.keyPassword}" />
-            </tls:context>
+            <tls:context >
+				<tls:key-store type="jks" path="keystore.jks" alias="mule" keyPassword="password" password="password" />
+			</tls:context>
         </http:listener-connection>
     </http:listener-config>
     <apikit:config name="secure-properties-api-config" api="resource::b85b361d-0842-4b70-af37-2723c2c3ae7e:Secure-Properties-API:2.0.3:raml:zip:secure-properties-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <file:config name="File_Config" doc:name="File Config" doc:id="17a4b774-2a13-4ac3-be1c-22f25c0ea68e" />
-    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="bf5b950e-6d36-4f3a-b4fa-f840f610fd47" file="config.secure.dev.yaml" key="${securePropertiesKey}">
-        <secure-properties:encrypt algorithm="Blowfish" />
-    </secure-properties:config>
     <flow name="secure-properties-api-main">
         <http:listener config-ref="secure-properties-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -132,7 +129,8 @@ output application/json
         <apikit:console config-ref="secure-properties-api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd  http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd  http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd  http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -147,7 +145,6 @@ output application/json
         </error-handler>
     </flow>
     <flow name="post:\file-level:multipart\form-data:secure-properties-api-config">
-        <logger level="INFO" message="post:\file-level:multipart\form-data:secure-properties-api-config" />
         <set-variable value="#[output application/java --- payload.parts.inputFile.headers.'Content-Type']" doc:name="contentType" doc:id="cc09c987-519b-43a2-9f40-f27f9875948e" variableName="contentType" />
         <try doc:name="Try" doc:id="5a059cd9-8bd5-4335-b8d1-848c5c7fbb4c">
             <validation:is-true doc:name="Is true" doc:id="5f2acb67-f0e2-41bf-95f7-e9ca03f3bb66" expression="#[vars.contentType == 'application/x-yaml' or vars.contentType == 'text/yaml']" />
@@ -191,7 +188,6 @@ output application/json
         <file:read doc:name="Read" doc:id="f54d8d6a-29a2-4cb9-ae23-671dfe88ec1b" path="#[p('app.home') ++ &quot;/&quot; ++ vars.outputFile]" outputMimeType="application/octet-stream" />
     </flow>
     <flow name="post:\file:multipart\form-data:secure-properties-api-config">
-        <logger level="INFO" message="post:\file:multipart\form-data:secure-properties-api-config" />
         <set-variable value="#[output application/java --- payload.parts.inputFile.headers.'Content-Type']" doc:name="contentType" doc:id="9ba08efa-b4b0-4d59-b796-3daefb137982" variableName="contentType" />
         <try doc:name="Try" doc:id="595b1142-6da2-4f4e-a134-91be17d51281">
             <validation:is-true doc:name="Is true" doc:id="95fdf990-ddcd-4deb-8047-a95bf5db34bd" expression="#[vars.contentType == 'application/x-yaml' or vars.contentType == 'text/yaml']" />
@@ -235,7 +231,6 @@ output application/json
         <file:read doc:name="Read" doc:id="448940e0-451e-4737-8d94-8d62194d3038" path="#[p('app.home') ++ &quot;/&quot; ++ vars.outputFile]" outputMimeType="application/octet-stream" />
     </flow>
     <flow name="post:\string:multipart\form-data:secure-properties-api-config">
-        <logger level="INFO" doc:name="Logger" doc:id="e74daed2-148c-4e2b-8cb8-4ee5dcd47071" />
         <set-variable value="#[output application/java --- payload.parts.operation.content]" doc:name="operation" doc:id="503a6af9-9a72-4881-bf1a-114b8c2eeedb" variableName="operation" />
         <set-variable value="#[output application/java --- payload.parts.algorithm.content]" doc:name="algorithm" doc:id="17b77276-0fe0-4265-9788-17ef2089793d" variableName="algorithm" />
         <set-variable value="#[output application/java --- payload.parts.mode.content]" doc:name="mode" doc:id="2ac2d1c8-f76f-4d29-8bc7-8e0831c1b679" variableName="mode" />
